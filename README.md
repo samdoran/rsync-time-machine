@@ -1,4 +1,4 @@
-## rsync-time-machine.sh
+## rsync-time-machine
 
 Backup mimicking Time Machine from Mac OS X using rsync
 
