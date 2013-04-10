@@ -64,17 +64,14 @@ ln -s $DATE_FORMAT "$DESTINATION"/Latest
 # BSD date in OS X has a different syntax than GNU date in Linux
 if [[ $OS == "Darwin" ]]; then
 
-    # Return YYYY-MM one year and one month ago from today
-    LAST_YEAR=$(date -v -1y "+%Y")
-    LAST_MONTH=$(date -v -1m "+%m")
-    REMOVE_YEAR_MONTH=$(date -v -1y -v -1m  "+%Y-%m")
+  # Return YYYY one year ago from today
+  LAST_YEAR=$(date -v -1y "+%Y")
 
 elif [[ $OS == "Linux" ]]; then
 
-    # Return YYYY-MM one year and one month ago from today
-    LAST_YEAR=$(date -d "last year" "+%Y")
-    LAST_MONTH=$(date -d "last month" "+%m")
-    REMOVE_YEAR_MONTH=$LAST_YEAR-$LAST_MONTH     
+  # Return YYYY one year ago from today
+  LAST_YEAR=$(date -d "last year" "+%Y")
+
 fi
 
 
