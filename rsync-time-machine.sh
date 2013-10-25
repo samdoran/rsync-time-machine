@@ -17,13 +17,6 @@ CURRENT_MONTH=$(date +%m)
 SOURCE="[absolute path to source directory]"
 DESTINATION="[absolute path to backup destination]/$HOST"
 
-# Each exclude string must be separated by a space
-# Make sure the EXCLUDE variable contents are enclosed in double quotes
-# Example: " .* .~* *somestring*.jpg "
-EXCLUDE=" "
-
-
-
 # --- Main Program --- #
 
 # Create destination if it does not exist
@@ -31,22 +24,17 @@ if [[ ! -d "$DESTINATION" ]] ; then
   mkdir -p "$DESTINATION"
 fi
 
-# Create exclude string
-for i in $EXCLUDE ; do
-  EXCLUDESTRING="$EXCLUDESTRING --exclude "$i" "
-done
-
 # Make inital backup if Latest does not exist, otherwise only copy what has changed
 # and hard link to files that are the same
 if [[ ! -L "$DESTINATION"/Latest ]] ; then
   rsync -aPh \
                 --delete \
-                $EXCLUDESTRING \
+                --exclude-from=$SOURCE/.rsync/exclude \
                 "$SOURCE" "$DESTINATION"/$DATE_FORMAT
 else
   rsync -aPh \
                --delete \
-               $EXCLUDESTRING \
+               --exclude-from=$SOURCE/.rsync/exclude \
                --link-dest="$DESTINATION"/Latest \
                "$SOURCE" "$DESTINATION"/$DATE_FORMAT
 fi
