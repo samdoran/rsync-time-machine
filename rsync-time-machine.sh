@@ -34,6 +34,7 @@ if [[ ! -L "$DESTINATION"/Latest ]] ; then
 else
   rsync -aPh \
                --delete \
+               --delete-excluded \
                --exclude-from=$SOURCE/.rsync/exclude \
                --link-dest="$DESTINATION"/Latest \
                "$SOURCE" "$DESTINATION"/$DATE_FORMAT
