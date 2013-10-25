@@ -11,18 +11,12 @@ HOST=$(hostname)
 DATE_FORMAT=$(date "+%Y-%m-%d-%H%M%S")
 CURRENT_YEAR=$(date +%Y)
 CURRENT_MONTH=$(date +%m)
+RSYNC_OPTIONS=--archive --partial --progress --human-readable
 
 # Use absolute paths. Relative paths tend to break the hard linking advantage of rsync.
 # Paths can include spaces as long as variable contents are double quoted
 SOURCE="[absolute path to source directory]"
 DESTINATION="[absolute path to backup destination]/$HOST"
-
-# Each exclude string must be separated by a space
-# Make sure the EXCLUDE variable contents are enclosed in double quotes
-# Example: " .* .~* *somestring*.jpg "
-EXCLUDE=" "
-
-
 
 # --- Main Program --- #
 
@@ -31,22 +25,18 @@ if [[ ! -d "$DESTINATION" ]] ; then
   mkdir -p "$DESTINATION"
 fi
 
-# Create exclude string
-for i in $EXCLUDE ; do
-  EXCLUDESTRING="$EXCLUDESTRING --exclude "$i" "
-done
-
 # Make inital backup if Latest does not exist, otherwise only copy what has changed
 # and hard link to files that are the same
 if [[ ! -L "$DESTINATION"/Latest ]] ; then
-  rsync -aPh \
+  rsync $RSYNC_OPTIONS \
                 --delete \
-                $EXCLUDESTRING \
+                --exclude-from=$SOURCE/.rsync/exclude \
                 "$SOURCE" "$DESTINATION"/$DATE_FORMAT
 else
-  rsync -aPh \
+  rsync $RSYNC_OPTIONS \
                --delete \
-               $EXCLUDESTRING \
+               --delete-excluded \
+               --exclude-from=$SOURCE/.rsync/exclude \
                --link-dest="$DESTINATION"/Latest \
                "$SOURCE" "$DESTINATION"/$DATE_FORMAT
 fi
@@ -62,7 +52,7 @@ ln -s $DATE_FORMAT "$DESTINATION"/Latest
 # --- Remove old backups --- #
 
 # BSD date in OS X has a different syntax than GNU date in Linux
-if [[ $OS == "Darwin" ]]; then
+if [[ $OS == "Darwin" || $OS == "FreeBSD" ]]; then
 
   # Return YYYY one year ago from today
   LAST_YEAR=$(date -v -1y "+%Y")
