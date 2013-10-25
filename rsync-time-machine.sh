@@ -62,7 +62,7 @@ ln -s $DATE_FORMAT "$DESTINATION"/Latest
 # --- Remove old backups --- #
 
 # BSD date in OS X has a different syntax than GNU date in Linux
-if [[ $OS == "Darwin" ]]; then
+if [[ $OS == "Darwin" || $OS == "FreeBSD" ]]; then
 
   # Return YYYY one year ago from today
   LAST_YEAR=$(date -v -1y "+%Y")
