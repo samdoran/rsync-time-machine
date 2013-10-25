@@ -11,6 +11,7 @@ HOST=$(hostname)
 DATE_FORMAT=$(date "+%Y-%m-%d-%H%M%S")
 CURRENT_YEAR=$(date +%Y)
 CURRENT_MONTH=$(date +%m)
+RSYNC_OPTIONS=-aPh
 
 # Use absolute paths. Relative paths tend to break the hard linking advantage of rsync.
 # Paths can include spaces as long as variable contents are double quoted
@@ -27,12 +28,12 @@ fi
 # Make inital backup if Latest does not exist, otherwise only copy what has changed
 # and hard link to files that are the same
 if [[ ! -L "$DESTINATION"/Latest ]] ; then
-  rsync -aPh \
+  rsync $RSYNC_OPTIONS \
                 --delete \
                 --exclude-from=$SOURCE/.rsync/exclude \
                 "$SOURCE" "$DESTINATION"/$DATE_FORMAT
 else
-  rsync -aPh \
+  rsync $RSYNC_OPTIONS \
                --delete \
                --delete-excluded \
                --exclude-from=$SOURCE/.rsync/exclude \
