@@ -8,7 +8,7 @@ Define the `$SOURCE` and `$DESTINATION` variables using absolute paths and any e
 
 The  `$SOURCE` and `$DESTINATION` variables could be defined as `$1` and `$2`, respectively, if you want to pass in those parameters each time. This could be used to create backups of different sources to different destinations or a remote host without having to create duplicate copies of `rsync-time-machine.sh`.
 
-Define files you want excluded from the backups in $SOURCE/.rsync/exclusions with one exclusion pattern per line.
+Define files you want excluded from the backups in `$SOURCE/.rsync/exclusions` with one exclusion pattern per line.
 
 ### What it does
 
