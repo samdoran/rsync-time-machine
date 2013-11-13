@@ -8,6 +8,8 @@ Define the `$SOURCE` and `$DESTINATION` variables using absolute paths and any e
 
 The  `$SOURCE` and `$DESTINATION` variables could be defined as `$1` and `$2`, respectively, if you want to pass in those parameters each time. This could be used to create backups of different sources to different destinations or a remote host without having to create duplicate copies of `rsync-time-machine.sh`.
 
+Define files you want excluded from the backups in $SOURCE/.rsync/exclusions with one exclusion pattern per line.
+
 ### What it does
 
 Snapshot folders are created in `$DESTINATION/$DATE_FORMAT` according to the time the snapshot was created. A symlink to the most recent snapshot is created at `$DESTINATION/Latest`. The `--link-dest` parameter of `rsync` is used so that only files that have changed since the last snapshot are copied, keeping the snapshot sizes small.
