@@ -11,7 +11,7 @@ HOST=$(hostname)
 DATE_FORMAT=$(date "+%Y-%m-%d-%H%M%S")
 CURRENT_YEAR=$(date +%Y)
 CURRENT_MONTH=$(date +%m)
-RSYNC_OPTIONS=--archive --partial --progress --human-readable
+RSYNC_OPTIONS="--archive --partial --progress --human-readable"
 
 # Use absolute paths. Relative paths tend to break the hard linking advantage of rsync.
 # Paths can include spaces as long as variable contents are double quoted
