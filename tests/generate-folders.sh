@@ -3,8 +3,9 @@
 # Generate test data for rsync-time-machine.sh
 
 PROGRAM=$(basename $0)
+HOST=$(hostname)
 TEST_SOURCE="./Test Source"
-TEST_DESTINATION="./Test Destination"
+TEST_DESTINATION="./Test Destination/${HOST}"
 
 
 # --- Functions --- #
@@ -23,20 +24,19 @@ gen_source() {
 gen_dirs() {
 
     if [[ ! -d "$TEST_DESTINATION" ]]; then
-        mkdir "$TEST_DESTINATION"
+        mkdir -p "$TEST_DESTINATION"
     fi
 
     for (( year = $(( $(date "+%Y") - ${1:-2} )); year <= $(date "+%Y"); year++ )); do
         for (( month = 1; month <= 12; month++ )); do
             for (( day = 1; day <= 30; day++ )); do
-                mkdir "${TEST_DESTINATION}/$(date "+${year}-$(printf "%02d" $month)-$(printf "%02d" $day)-%H%M%S")"
+                mkdir -p "${TEST_DESTINATION}/$(date "+${year}-$(printf "%02d" $month)-$(printf "%02d" $day)-%H%M%S")"
             done
         done
     done
 }
 
 cleanup() {
-    rm -rf "./${TEST_SOURCE}"
     rm -rf "./${TEST_DESTINATION}"
 }
 
