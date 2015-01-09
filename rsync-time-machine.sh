@@ -6,19 +6,32 @@
 
 # --- Variables --- #
 
+PROGRAM=$(basename $0)
 OS=$(uname -s)
 HOST=$(hostname)
 DATE_FORMAT=$(date "+%Y-%m-%d-%H%M%S")
 CURRENT_YEAR=$(date +%Y)
 CURRENT_MONTH=$(date +%m)
+RSYNC_BIN=$(which rsync)
 RSYNC_OPTIONS="--archive --partial --progress --human-readable"
 
 # Use absolute paths. Relative paths tend to break the hard linking advantage of rsync.
 # Paths can include spaces as long as variable contents are double quoted
-SOURCE="[absolute path to source directory]"
-DESTINATION="[absolute path to backup destination]/$HOST"
+SOURCE="$1"
+DESTINATION="$2"
 
 # --- Functions --- #
+die() {
+    echo "$PROGRAM: $1" >&2
+    exit ${2:-1}
+}
+
+help() {
+  cat <<EOF
+Usage: $PROGRAM "[SOURCE PATH]" "[DESTINATION PATH]"
+EOF
+  exit 0
+}
 
 create_dest() {
   # Create destination if it does not exist
@@ -31,15 +44,15 @@ backup() {
   # Make inital backup if Latest does not exist, otherwise only copy what has changed
   # and hard link to files that are the same
   if [[ ! -L "$DESTINATION"/Latest ]] ; then
-    rsync $RSYNC_OPTIONS \
+    $RSYNC_BIN $RSYNC_OPTIONS \
                   --delete \
-                  --exclude-from=$SOURCE/.rsync/exclude \
+                  --exclude-from="$SOURCE/.rsync/exclude" \
                   "$SOURCE" "$DESTINATION"/$DATE_FORMAT
   else
-    rsync $RSYNC_OPTIONS \
+    $RSYNC_BIN $RSYNC_OPTIONS \
                  --delete \
                  --delete-excluded \
-                 --exclude-from=$SOURCE/.rsync/exclude \
+                 --exclude-from="$SOURCE/.rsync/exclude" \
                  --link-dest="$DESTINATION"/Latest \
                  "$SOURCE" "$DESTINATION"/$DATE_FORMAT
   fi
@@ -96,6 +109,20 @@ cleanup() {
 
 
 # --- Main Program --- #
+
+case $1 in
+  --help|-h )
+    help
+    ;;
+esac
+
+if [[ $1 == '' ]]; then
+  die "Source destination is not defined"
+fi
+
+if [[ $2 == '' ]]; then
+  die "Target destination is not defined"
+fi
 
 create_dest
 backup
