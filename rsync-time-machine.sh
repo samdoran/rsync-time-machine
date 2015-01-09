@@ -117,7 +117,7 @@ case $1 in
 esac
 
 if [[ $1 == '' ]]; then
-  die "Source destination is not defined"
+  die "Source is not defined"
 fi
 
 if [[ $2 == '' ]]; then
