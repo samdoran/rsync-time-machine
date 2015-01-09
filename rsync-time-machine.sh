@@ -94,12 +94,15 @@ cleanup() {
   find "$DESTINATION" -mindepth 1 -maxdepth 1 -type d ! -name "$CURRENT_YEAR-*" | grep -v "$LAST_YEAR-*" | xargs -I {} rm -rf {}
 }
 
+
 # --- Main Program --- #
 
 create_dest
 backup
 relink
 
-# --- Remove old backups --- #
-set_date_syntax
-cleanup
+# Remove old backups
+(
+  set_date_syntax
+  cleanup
+)
