@@ -30,13 +30,13 @@ fi
 if [[ ! -L "$DESTINATION"/Latest ]] ; then
   rsync $RSYNC_OPTIONS \
                 --delete \
-                --exclude-from=$SOURCE/.rsync/exclude \
+                --exclude-from="$SOURCE"/.rsync/exclude \
                 "$SOURCE" "$DESTINATION"/$DATE_FORMAT
 else
   rsync $RSYNC_OPTIONS \
                --delete \
                --delete-excluded \
-               --exclude-from=$SOURCE/.rsync/exclude \
+               --exclude-from="$SOURCE"/.rsync/exclude \
                --link-dest="$DESTINATION"/Latest \
                "$SOURCE" "$DESTINATION"/$DATE_FORMAT
 fi
